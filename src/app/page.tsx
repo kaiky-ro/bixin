@@ -1,47 +1,47 @@
 'use client'
-import { useState } from 'react';
-import { supabase } from './lib/supabase';
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { supabase } from "./lib/supabase"
 
 export default function Home(){
-  const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
   const [msg, setMsg] = useState('')
+  const router = useRouter()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const {error} = await supabase.from('usuarios').insert([{nome, email}])
+    setMsg('')
+
+    const {data, error} = await supabase.auth.signInWithPassword({email, password: senha})
 
     if(error){
-      setMsg('Erro ao salvar: ' + error.message)
+      setMsg('Erro ao logar: ' + error.message)
     }else{
-      setMsg('Cadastro realizado')
-      setNome('')
-      setEmail('')
+      setMsg('Bem vindo')
+      router.push('/dashboard')
     }
   }
 
   return(
     <main>
-      <h1>Aproveite seu Bixin</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleLogin}>
         <input
-        type='text'
-        placeholder='Nome'
-        value={nome}
-        onChange={(e) => setNome(e.target.value)}
-        required
-        />
-        <input
-        type='email'
-        placeholder='Email'
-        value={email}
+        type="email"
+        placeholder="Email"
         onChange={(e) => setEmail(e.target.value)}
         required
         />
-        <button type='submit'> 
-          Começar
-        </button>
+        <input
+        type="password"
+        placeholder="Senha"
+        onChange={(e) => setSenha(e.target.value)}
+        required
+        />
+        <button type="submit">Login</button>
+
         {msg && <p>{msg}</p>}
       </form>
     </main>
