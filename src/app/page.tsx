@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "./lib/supabase"
+import Link from 'next/link'
 
 export default function Home(){
   const [email, setEmail] = useState('')
@@ -44,6 +45,9 @@ export default function Home(){
 
         {msg && <p>{msg}</p>}
       </form>
+      <Link href={'/cadastro'}>Cadastre-se</Link>
+      <br/>
+      <Link href={'/reset_password'}>Esqueci a senha</Link>
     </main>
   )
 }
