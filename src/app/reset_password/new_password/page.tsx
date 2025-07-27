@@ -6,6 +6,7 @@ import { setDefaultResultOrder } from "node:dns"
 
 export default function DefinirSenha(){
     const [newPasssword, setNewPassword] = useState('')
+    const [confirm, setConfirm] = useState('')
     const [msg, setMsg] = useState('')
     const [loading, setLoading] = useState(true)
     const router = useRouter()
@@ -26,15 +27,22 @@ export default function DefinirSenha(){
             e.preventDefault()
             setMsg('')
 
+            if(newPasssword != confirm){
+                setMsg('As senhas inseridas são diferentes')
+                return
+            }
+
             const {error} = await supabase.auth.updateUser({password: newPasssword})
             if(error){
                 setMsg('Erro ao atualizar a senha')
+                return
             }else{
                 setMsg('Senha atualizada')
                 setTimeout(() =>{
                     router.push('/')
                 }, 2000)
-            }}
+            }
+        }
     return(
         <main>
             <h1>Recuperar senha</h1>
@@ -48,6 +56,13 @@ export default function DefinirSenha(){
                 onChange={(e) => setNewPassword(e.target.value)}
                 value={newPasssword}
                 minLength={8}
+                required
+                />
+                <input
+                type = 'password'
+                placeholder="Confirme a senha"
+                onChange={(e) => setConfirm(e.target.value)}
+                value={confirm}
                 required
                 />
                 <button type="submit">
